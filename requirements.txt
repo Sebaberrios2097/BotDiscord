@@ -1,0 +1,8 @@
+# discord.py desde GitHub — la versión 2.3.2 de PyPI no soporta
+# el nuevo protocolo de cifrado de voz de Discord (error 4017)
+discord.py[voice] @ git+https://github.com/Rapptz/discord.py.git
+yt-dlp>=2026.3.17   # mantener actualizado — YouTube cambia formatos con frecuencia
+python-dotenv==1.0.1
+PyNaCl==1.6.2
+davey==0.1.5        # protocolo DAVE (cifrado de voz de Discord)
+audioop-lts==0.2.2  # backport de audioop para Python 3.13+
