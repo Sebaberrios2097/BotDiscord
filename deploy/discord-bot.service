@@ -1,0 +1,41 @@
+# =============================================================
+#  discord-bot.service — Plantilla de servicio systemd
+#
+#  Este archivo es una REFERENCIA. El script deploy.sh lo genera
+#  automáticamente con los valores correctos para tu servidor.
+#
+#  Si necesitas instalarlo manualmente:
+#    sudo cp deploy/discord-bot.service /etc/systemd/system/
+#    sudo nano /etc/systemd/system/discord-bot.service  (editar User y WorkingDirectory)
+#    sudo systemctl daemon-reload
+#    sudo systemctl enable --now discord-bot
+# =============================================================
+
+[Unit]
+Description=Discord Music Bot
+# Esperar a que la red esté disponible antes de iniciar
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# ── Editar estos dos valores ──────────────────────────────────
+User=ubuntu
+WorkingDirectory=/home/ubuntu/BotDiscord
+# ─────────────────────────────────────────────────────────────
+
+# Usa el Python del entorno virtual, no el del sistema
+ExecStart=/home/ubuntu/BotDiscord/.venv/bin/python bot.py
+
+# Reiniciar automáticamente si el proceso muere
+Restart=always
+RestartSec=10
+
+# Redirigir logs a journald (ver con: journalctl -u discord-bot -f)
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=discord-bot
+
+[Install]
+WantedBy=multi-user.target
