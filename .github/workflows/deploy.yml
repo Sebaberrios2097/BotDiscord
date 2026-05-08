@@ -1,0 +1,43 @@
+# ============================================================
+#  .github/workflows/deploy.yml
+#
+#  Workflow de CI/CD — se dispara con cada push a main.
+#
+#  Secrets requeridos en GitHub → Settings → Secrets:
+#    SERVER_HOST      : IP o hostname del servidor
+#    SERVER_USER      : usuario SSH (ej: ubuntu)
+#    SSH_PRIVATE_KEY  : clave privada SSH (contenido completo)
+# ============================================================
+
+name: Deploy Discord Bot
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy to server
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            set -e
+
+            BOT_DIR="/opt/BotDiscord"
+
+            echo "==> Actualizando código..."
+            git -C "$BOT_DIR" pull origin main
+
+            echo "==> Reconstruyendo y reiniciando contenedor..."
+            docker compose -f "$BOT_DIR/docker-compose.yml" up -d --build
+
+            echo "==> Estado del contenedor:"
+            docker compose -f "$BOT_DIR/docker-compose.yml" ps

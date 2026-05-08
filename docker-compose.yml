@@ -1,0 +1,35 @@
+# ============================================================
+#  docker-compose.yml — Discord Music Bot
+#
+#  Uso inicial:
+#    cp .env.example .env
+#    nano .env          # pegar DISCORD_TOKEN real
+#    docker compose up -d
+#
+#  Actualizar tras git pull:
+#    docker compose up -d --build
+#
+#  Ver logs en tiempo real:
+#    docker compose logs -f
+# ============================================================
+
+services:
+  discord-bot:
+    build: .
+    container_name: discord-bot
+    restart: unless-stopped
+
+    # Lee DISCORD_TOKEN y COMMAND_PREFIX desde el archivo .env
+    env_file:
+      - .env
+
+    environment:
+      # Evita que Python bufferice stdout (logs en tiempo real)
+      - PYTHONUNBUFFERED=1
+
+    # Montaje de logs persistente (opcional, comentar si no se necesita)
+    volumes:
+      - bot_logs:/app/logs
+
+volumes:
+  bot_logs:
